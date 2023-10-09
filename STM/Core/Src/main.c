@@ -254,6 +254,7 @@ int main(void)
 			 }
 			 updateClockBuffer (hour,minute);
 			 HAL_GPIO_TogglePin ( LED_RED_GPIO_Port , LED_RED_Pin );
+			 HAL_GPIO_TogglePin ( DOT_GPIO_Port , DOT_Pin );
 			 setTimer0 (1000) ;
 		 }
   }
@@ -417,9 +418,6 @@ counter --;
 			HAL_GPIO_TogglePin ( EN3_GPIO_Port , EN3_Pin ) ;
 			update7SEG(flip);
 			flip = 0;
-		}
-		if( counter % 100 == 1) {
-			HAL_GPIO_TogglePin ( DOT_GPIO_Port , DOT_Pin );
 		}
 	}
 
