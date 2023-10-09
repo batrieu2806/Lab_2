@@ -232,6 +232,7 @@ int main(void)
 	HAL_GPIO_WritePin ( EN2_GPIO_Port , EN2_Pin,GPIO_PIN_SET ) ;
 	HAL_GPIO_WritePin ( EN3_GPIO_Port , EN3_Pin,GPIO_PIN_SET ) ;
 	setTimer0 (2000) ;
+	int flip = 0;
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
@@ -239,24 +240,56 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if( timer0_flag == 1){
-			second++;
-			 if ( second >= 60) {
-				 second = 0;
-			 	 minute ++;
-			 }
-			 if( minute >= 60) {
-				 minute = 0;
-			 	 hour ++;
-			 }
-			 if( hour >=24){
-				 hour = 0;
-			 }
-			 updateClockBuffer (hour,minute);
-			 HAL_GPIO_TogglePin ( LED_RED_GPIO_Port , LED_RED_Pin );
-			 HAL_GPIO_TogglePin ( DOT_GPIO_Port , DOT_Pin );
-			 setTimer0 (1000) ;
-		 }
+	  if(timer0_flag == 1) {
+			HAL_GPIO_WritePin ( EN0_GPIO_Port , EN0_Pin,GPIO_PIN_SET ) ;
+			HAL_GPIO_WritePin ( EN1_GPIO_Port , EN1_Pin,GPIO_PIN_SET ) ;
+			HAL_GPIO_WritePin ( EN2_GPIO_Port , EN2_Pin,GPIO_PIN_SET ) ;
+			HAL_GPIO_WritePin ( EN3_GPIO_Port , EN3_Pin,GPIO_PIN_SET ) ;
+
+			  if(flip == 0){
+				  HAL_GPIO_TogglePin ( EN0_GPIO_Port , EN0_Pin ) ;
+				  update7SEG(flip);
+				  flip = 1;
+				  setTimer0 (250);
+			  }
+			  else if(flip == 1){
+				  HAL_GPIO_TogglePin ( EN1_GPIO_Port , EN1_Pin ) ;
+				  update7SEG(flip);
+				  flip = 2;
+				  setTimer0 (250);
+			  }
+			  else if(flip == 2){
+				  HAL_GPIO_TogglePin ( EN2_GPIO_Port , EN2_Pin ) ;
+				  update7SEG(flip);
+				  flip = 3;
+				  setTimer0 (250);
+			  }
+			  else if(flip == 3){
+				  HAL_GPIO_TogglePin ( EN3_GPIO_Port , EN3_Pin ) ;
+				  update7SEG(flip);
+				  flip = 0;
+				  setTimer0 (250);
+			  }
+
+			  if( flip == 3){
+					second++;
+					 if ( second >= 60) {
+						 second = 0;
+						 minute ++;
+					 }
+					 if( minute >= 60) {
+						 minute = 0;
+						 hour ++;
+					 }
+					 if( hour >=24){
+						 hour = 0;
+					 }
+					 updateClockBuffer (hour,minute);
+					 HAL_GPIO_TogglePin ( LED_RED_GPIO_Port , LED_RED_Pin );
+					 HAL_GPIO_TogglePin ( DOT_GPIO_Port , DOT_Pin );
+					 //setTimer0 (250) ;
+			  }
+	  }
   }
     /* USER CODE END WHILE */
 
@@ -388,11 +421,10 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 int counter = 100;
-int flip = 0;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*htim)
 {
 timer_run ();
-counter --;
+/*counter --;
 	if (counter <= 0){counter = 100;}
 	if( counter % 25 == 1) {
 		HAL_GPIO_WritePin ( EN0_GPIO_Port , EN0_Pin,GPIO_PIN_SET ) ;
@@ -419,7 +451,7 @@ counter --;
 			update7SEG(flip);
 			flip = 0;
 		}
-	}
+	}*/
 
 }
 
